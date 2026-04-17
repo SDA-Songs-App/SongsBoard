@@ -5,9 +5,10 @@ import CATEGORIES from "../constants/Categories"
 import LyricsContent from "../constants/LyricsContent";
 import axios from "axios"
 import LANGUAGES from "../constants/languages";
+import LANGUAGE_MAP from "../config/language";
 type CreateLyricsForm = {
-  albumId: number;
-  artistId: number;
+  albumId: number | "";
+  artistId: number | "";
   audioFileUrl: string;
   language: string;
   category: string;
@@ -19,7 +20,8 @@ type Artist = {
   genre:string,
   imageUrl:string;
   createdAt:string,
-  deletedAt:string
+  deletedAt:string,
+  languageKey:string,
 }
 type Album ={
   Id:number,
@@ -81,7 +83,16 @@ const handleChange = (
     });
   } else {
     // Handle file input
-    if (type === "file" && files && files[0]) {
+    if (name === "language") {
+  setFormData(prev => ({
+    ...prev,
+    language: value,
+    artistId: 0,   // reset artist
+    albumId: 0     // reset album too
+  }));
+  return;
+}
+    else if (type === "file" && files && files[0]) {
       const file = files[0];
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -91,7 +102,8 @@ const handleChange = (
         }));
       };
       reader.readAsDataURL(file);
-    } else {
+    } 
+    else {
       // Update top-level non-file fields
       setFormData(prev => ({
         ...prev,
@@ -150,6 +162,17 @@ const handleChange = (
   alert("Failed to create lyrics. Check console for details.");
 }
  }
+const filteredArtists = artists.filter((artist) => {
+  const mappedLanguage =
+    LANGUAGE_MAP[formData.language as keyof typeof LANGUAGE_MAP];
+
+  if (!mappedLanguage) return true;
+
+  return (
+    artist.languageKey?.toString().trim().toLowerCase() ===
+    mappedLanguage.toString().trim().toLowerCase()
+  );
+});
   return (
   <div className="lyrics-form-container">
   <form className="lyrics-form" onSubmit={handleSubmit}>
@@ -166,8 +189,8 @@ const handleChange = (
         <div>
           <label>Artist</label>
           <select name="artistId" value={formData.artistId} onChange={handleChange}>
-            <option value="">Select Artist</option>
-            {artists.map((artist) => (
+            <option value={0}>Select Artist</option>
+            {filteredArtists .map((artist) => (
               <option key={artist.Id} value={artist.Id}>{artist.name}</option>
             ))}
           </select>
@@ -193,7 +216,6 @@ const handleChange = (
               onChange={handleChange}>
             <option value="">Select Language</option>
             {Object.keys(LANGUAGES)
-              .filter((cat) => isNaN(Number(cat)))
               .map((lang) => (
                 <option key={lang} value={lang}>{lang.replace(/_/g, " ")}</option>
               ))}
@@ -214,10 +236,10 @@ const handleChange = (
           ))}
         </select>
      </div>
-      {/* <div>
+      { <div>
         <label>Upload Audio</label>
         <input type="file" accept="audio/*" onChange={handleChange} />
-      </div> */}
+      </div> }
        </div>
       <div className="chorus">
       <label>Chorus</label>

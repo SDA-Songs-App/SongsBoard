@@ -1,12 +1,14 @@
 import React, { useState } from "react";
 import axios from "axios";
 import "./form.css";
+import LANGUAGE_MAP from "../config/language";
 
 type CreateArtistForm = {
   name: string;
   genre: string;
   bio: string;
   imageUrl: string;
+  languageKey: string;
 };
 
 const ArtistForm = () => {
@@ -15,10 +17,11 @@ const ArtistForm = () => {
     genre: "",
     bio: "",
     imageUrl: "",
+    languageKey: ""
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -32,9 +35,10 @@ const ArtistForm = () => {
       );
       console.log("Artist created:", response.data);
       // Reset form
-      setFormData({ name: "", genre: "", bio: "", imageUrl: "" });
+      setFormData({ name: "", genre: "", bio: "", imageUrl: "", languageKey:"" });
     } catch (error) {
       console.error("Error creating artist:", error);
+      alert("Failed to Create Artist")
     }
   };
 
@@ -73,7 +77,21 @@ const ArtistForm = () => {
           value={formData.imageUrl}
           onChange={handleChange}
         />
+<label>Language</label>
+<select
+  name="languageKey"
+  value={formData.languageKey}
+  onChange={handleChange}
+  required
+>
+  <option value="">Select Language</option>
 
+  {Object.entries(LANGUAGE_MAP).map(([key, value]) => (
+    <option key={key} value={value}>
+      {value}
+    </option>
+  ))}
+</select>
         <button type="submit">Save Artist</button>
       </form>
     </div>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./styles/add.album.css";
 import artists from "../constants/artists";
@@ -9,8 +9,17 @@ type CreateAlbumForm = {
   releaseDate: string;
   coverImageUrl: string;
 };
-
+type Artist = {
+  Id:number,
+  name:string,
+  genre:string,
+  imageUrl:string;
+  createdAt:string,
+  deletedAt:string,
+  languageKey:string,
+}
 const AlbumForm = () => {
+   const [artists, setArtists] = useState<Artist[]>([])
   const [formData, setFormData] = useState<CreateAlbumForm>({
     title: "",
     artistId:"",
@@ -43,6 +52,13 @@ const AlbumForm = () => {
       console.error("Error creating Album:", error);
     }
   };
+  useEffect(() =>{
+   axios
+   
+         .get("https://sda-songs-be.onrender.com/artists")
+         .then((res) =>setArtists(res.data))
+         .catch((err) =>console.error(err))
+},[])
   return (
     <div className="form-container">
       <h2>Add New Album</h2>
