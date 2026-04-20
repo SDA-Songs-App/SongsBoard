@@ -84,7 +84,7 @@ const ArtistForm = () => {
   onChange={handleChange}
   required
 >
-  <option value="">Select Language</option>
+  npx expo <option value="">Select Language</option>
 
   {Object.entries(LANGUAGE_MAP).map(([key, value]) => (
     <option key={key} value={value}>
