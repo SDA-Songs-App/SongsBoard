@@ -6,12 +6,6 @@ import { AuthContext } from "../auth/auth-context";
 function SongList() {
   const navigate = useNavigate();
 const auth = useContext(AuthContext);
-type Notification = {
-  id: number;
-  message: string;
-  date: string;
-  status: "pending" | "read";
-};
 type Notifications ={
   id:number
   isRead:boolean
@@ -62,10 +56,10 @@ interface Artist {
   // if (!auth?.user || auth.user.role === "GUEST") return null;
   const [selectedLang, setSelectedLang] = useState("");
   const [selectedArtist, setSelectedArtist] = useState("");
-  const [notification, setNotifications] = useState<Notifications[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [, setNotifications] = useState<Notifications[]>([]);
+  const [, setLoading] = useState(true);
   const [songs, setSongs] = useState<Song[]>([]);
-    const [song, setSong] = useState<Song[]>([]);
+  const [, setSong] = useState<Song[]>([]);
      const languages = [...new Set(songs.map(song => song.language))];
   const artists = [...new Set(songs.map(song => song.Artist?.name).filter(Boolean))];
   // Dashboard stats
@@ -157,7 +151,7 @@ interface Artist {
   getNotifications();
   getSongs();
   fetchSong()
-}, [auth?.token]);
+}, [auth?.token, songId]);
 const activeSongs = songs.filter(song => song.deletedAt === null);
 const pendingSongsCount = activeSongs.reduce((count, song) => {
   const pendingLyrics = song.LyricsContents.filter(lc => lc.status === "PENDING");
