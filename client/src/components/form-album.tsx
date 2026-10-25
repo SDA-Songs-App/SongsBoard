@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import "./styles/add.album.css";
+import "../styles/add.album.css";
 //import artists from "../constants/artists";
 
 type CreateAlbumForm = {
