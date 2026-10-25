@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import React, { useContext, useEffect, useState } from "react";
-import "./styles/songlist.css";
+import "./styles/songsList.css";
 import { AuthContext } from "../auth/auth-context";
 
 function SongList() {
@@ -58,21 +58,7 @@ interface Artist {
   createdAt: string,
   deletedAt: string
 }
-  // All songs (sample)
-  const allSongs = [
-    { id: 1, title: "አመሰኛለሁ", artist: "አላሙራ ኳር", language: "አማርኛ", deletedAt: null },
-    { id: 2, title: "መገኖ ገለተ", artist: "ተፈራ ወ/ማሪያም", language: "ሲዳምኛ", deletedAt: new Date("2025-12-01")  },
-    { id: 3, title: "ከእ", artist: "አለሙ", language: "ጉራጊኛ", deletedAt: null },
-    { id: 4, title: "ጡሚን ቆረብ ኬእ", artist: "በረከት ዮሃንስ", language: "ከምባትኛ", deletedAt: null },
-    { id: 5, title: "ምስገአና", artist: "ኪሮስ", language: "ትግርኛ" , deletedAt: new Date("2025-12-01") },
-  ];
-
     const [open, setOpen] = useState(false);
-    const notifications: Notification[] = [
-    { id: 1, message: "Song 'አመሰኛለሁ' needs approval", date: "2025-12-07", status: "pending" },
-    { id: 2, message: "Album 'New Hits' submitted", date: "2025-12-06", status: "read" },
-    { id: 3, message: "Artist 'Ali' profile updated", date: "2025-12-05", status: "pending" },
-  ];
   // if (!auth?.user || auth.user.role === "GUEST") return null;
   const [selectedLang, setSelectedLang] = useState("");
   const [selectedArtist, setSelectedArtist] = useState("");
@@ -88,12 +74,6 @@ interface Artist {
      artistIcon:'👤',
      albumIcon:'💿'
   }
-  const stats = [
-    { title: "pending approval", value: songs.length, icon: "🎵" },
-    { title: "Active Songs", value: songs.filter(x =>x.deletedAt ===null).length, icon: "🎵" },
-    { title: "Total Artists", value: 12, icon: "👤" },
-    { title: "Total Albums", value: 56, icon: "💿" },
-  ];
   // Filter logic
  const filteredSongs = songs.filter(song => {
   return (
@@ -178,7 +158,6 @@ interface Artist {
   getSongs();
   fetchSong()
 }, [auth?.token]);
-  const unreadNotifications = notification.filter(n => n.isRead === false);
 const activeSongs = songs.filter(song => song.deletedAt === null);
 const pendingSongsCount = activeSongs.reduce((count, song) => {
   const pendingLyrics = song.LyricsContents.filter(lc => lc.status === "PENDING");
@@ -324,6 +303,7 @@ const uniqueArtists = new Set(activeSongs.map(song => song.Artist?.Id)).size;
             <th>Artist</th>
             <th>Category</th>
             <th>Language</th>
+            <th>Created At</th>
             <th>Status</th>
             <th>Action</th>
           </tr>
@@ -341,7 +321,8 @@ const uniqueArtists = new Set(activeSongs.map(song => song.Artist?.Id)).size;
 
               <td>{song.Category}</td>
               <td>{song.language}</td>
-              <td>{song.deletedAt ? "Inactive" : "Active"}</td>
+              <td>{song.updatedAt}</td>
+              <td>{song.createdAt ? "Inactive" : "Active"}</td>
               <td className="actions-cell">
                 {!song.deletedAt && (
                   <>

@@ -190,7 +190,7 @@ const filteredArtists = artists.filter((artist) => {
           <label>Artist</label>
           <select name="artistId" value={formData.artistId} onChange={handleChange}>
             <option value={0}>Select Artist</option>
-            {filteredArtists .map((artist) => (
+            {filteredArtists.map((artist) => (
               <option key={artist.Id} value={artist.Id}>{artist.name}</option>
             ))}
           </select>
